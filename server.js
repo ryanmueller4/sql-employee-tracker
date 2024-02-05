@@ -48,7 +48,7 @@ const addDepartment = () => {
     .then((data) => {
       db.query(`INSERT INTO department (dept_name)
       VALUES ("${data.dept_name}")`, err => {
-        viewDepartments()
+        viewDepartments();
       });
     });
 };
@@ -75,7 +75,7 @@ const addRole = () => {
     .then((data) => {
       db.query(`INSERT INTO role (title, salary, department_id)
       VALUES ("${data.title}", "${data.salary}", "${data.department_id}")`, err => {
-        viewRoles()
+        viewRoles();
       });
     });
 };
@@ -108,12 +108,12 @@ const addEmployee = () => {
       if (data.manager_id) {
         db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id)
         VALUES ("${data.firstName}", "${data.lastName}", "${data.role_id}", "${data.manager_id}")`, err => {
-          viewEmployees()
+          viewEmployees();
         });
       } else {
         db.query(`INSERT INTO employee (first_name, last_name, role_id)
         VALUES ("${data.firstName}", "${data.lastName}", "${data.role_id}")`, err => {
-          viewEmployees()
+          viewEmployees();
         });
       }
     });
@@ -147,7 +147,7 @@ const updateEmployee = () => {
           ])
           .then((firstName) => {
             db.query(`UPDATE employee SET first_name = "${firstName.updatedFirst}" WHERE id = "${employeeId}"`, err => {
-              viewEmployees()
+              viewEmployees();
             })
           })
       } else if (data.updateOptions === 'Last name') {
@@ -161,7 +161,7 @@ const updateEmployee = () => {
           ])
           .then((lastName) => {
             db.query(`UPDATE employee SET last_name = ${lastName.updatedLast} WHERE id = ${data.employee_id}`, err => {
-              viewEmployees()
+              viewEmployees();
             })
           })
       } else if (data.updateOptions === 'Employee Role') {
@@ -175,11 +175,25 @@ const updateEmployee = () => {
           ])
           .then((employeeRole) => {
             db.query(`UPDATE employee SET role_id = ${employeeRole.updatedRole} WHERE id = ${data.employee_id}`, err => {
-              viewEmployees()
+              viewEmployees();
             })
           })
-        }
-    });
+      } else if (data.updateOptions === 'Manager') {
+        inquirer
+          .prompt([
+            {
+              type: 'input',
+              message: 'Enter new manager id:',
+              name: 'updatedManager',
+            }
+          ])
+          .then((employeeManager) => {
+            db.query(`UPDATE employee SET manager_id = ${employeeManager.updatedManager} WHERE id = ${data.employee_id}`, err => {
+              viewEmployees();
+            })
+          })
+      }
+  });
 };
 
 const menu = () => {
